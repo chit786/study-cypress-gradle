@@ -1,0 +1,135 @@
+group 'com.test'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:0.8.4"
+        classpath 'com.bmuschko:gradle-docker-plugin:3.5.0'
+    }
+}
+//
+//apply plugin: 'docker-compose'
+//apply plugin: 'com.bmuschko.docker-remote-api'
+
+//import com.bmuschko.gradle.docker.tasks.container.*
+//import com.bmuschko.gradle.docker.tasks.image.*
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+//
+//// STEP 1 : bring up the docker compose only for the applications under test EXCLUDING cypress
+//
+//dockerCompose {
+//    useComposeFiles = ['docker-compose.yml']
+//    forceRecreate = true
+//    upAdditionalArgs = ['--exit-code-from', 'cypress']
+//    waitForTcpPorts = true
+//    captureContainersOutput = true
+//}
+//
+//// STEP 2 : bring up cypress and connect it to the above network from STEP1
+//
+//task buildCypress (type: DockerBuildImage){
+//    dependsOn composeUp
+//    inputDir = project.file('cypress')
+//}
+//
+//task createCypressContainer(type: DockerCreateContainer) {
+//    dependsOn buildCypress
+//    targetImageId { buildCypress.getImageId() }
+//}
+//
+//task startCypressContainer(type: DockerStartContainer) {
+//    dependsOn createCypressContainer
+//    targetContainerId { createCypressContainer.getContainerId() }
+//}
+//
+//task isContainerRunning (type: DockerLogsContainer) {
+//    follow = true
+//    tailAll = true
+//    onNext { message ->
+//        def foundMessage = message.toString()
+//        if (foundMessage.matches('Some string that says we are live')) {
+//            throw new RuntimeException('SHORT-CIRCUIT-POLLING')
+//        }
+//    }
+//    onError { exception ->
+//        // Ignore exception if container does not exist otherwise throw it
+//        if (!exception.message.contains('No such container'))
+//            throw exception
+//    }
+//    targetContainerId { createCypressContainer.getContainerId() }
+//}
+//
+//task runCypressCommand(type : DockerExecContainer) {
+//    dependsOn startCypressContainer
+//    commands ["./node_modules/.bin/cypress run"]
+//    attachStdout = true
+//    attachStderr = true
+//    targetContainerId { createCypressContainer.getContainerId() }
+//    finalizedBy isContainerRunning
+//}
+//
+//task stopCypressContainer(type: DockerStopContainer) {
+//    onError { exception ->
+//        if (exception.message != null && exception.message.contains('No such container')) {
+//            println 'Container not running'
+//        } else {
+//            throw exception
+//        }
+//    }
+//    targetContainerId { createCypressContainer.getContainerId() }
+//}
+//
+//task functionalTestMyApp(type: DefaultTask) {
+//    dependsOn runCypressCommand
+//    finalizedBy stopCypressContainer
+//}
+//
+//
+//// try 2
+
+task dockerComposeBuild(type: DockerComposeTask) {
+    command = "build"
+}
+
+task dockerComposeUp(type: DockerComposeTask, dependsOn: [dockerComposeBuild]) {
+    command = 'up --exit-code-from cypress'
+}
+
+task dockerComposeDown(type: DockerComposeTask) {
+    command = 'down'
+}
+
+task runTest{
+    dependsOn dockerComposeUp
+    finalizedBy dockerComposeDown
+}
+
+class DockerComposeTask extends DefaultTask {
+    def command
+
+    @TaskAction
+    def dockerCompose() {
+        project.exec({
+            executable = "docker-compose"
+            this.command.split().each { args it }
+            if (this.command == 'build') {
+                args "--force-rm"
+            }
+        })
+    }
+}
+

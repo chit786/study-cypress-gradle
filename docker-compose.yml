@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  firstpage:
+    build: ./PHPApp
+    ports:
+      - "5003:80"
+    volumes:
+      - ./PHPApp:/app
+  cypress:
+    build: ./cypress
+    depends_on:
+      - firstpage
