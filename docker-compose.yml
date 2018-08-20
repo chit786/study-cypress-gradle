@@ -2,11 +2,11 @@ version: "3"
 
 services:
   firstpage:
-    build: ./PHPApp
+    build: ./pyApp
     ports:
       - "5003:80"
     volumes:
-      - ./PHPApp:/app
+      - ./pyApp:/app
   cypress:
     build: ./cypress
     depends_on:
