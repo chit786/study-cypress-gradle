@@ -99,7 +99,7 @@ dependencies {
 //}
 //
 //
-//// try 2
+//// More general way without plugins
 
 task dockerComposeBuild(type: DockerComposeTask) {
     command = "build"
