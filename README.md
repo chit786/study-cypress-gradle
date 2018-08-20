@@ -12,7 +12,7 @@
   
   
 # What will the command do is following : 
-- Create docker images for cypress and PHPApp(our sample application under test) 
+- Create docker images for cypress and pyApp(our sample application under test) 
 - Brings up the container from the images above 
 - Run the tests 
 - Bring down / clean up the containers
