@@ -1,0 +1,16 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+
+stages:
+  - test
+
+gradle-build:
+  image: java:8
+  stage: test
+  script:
+    - ./gradlew runTest
