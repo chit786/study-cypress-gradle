@@ -5,9 +5,9 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:8-jdk
+    machine:
+      - image: circleci/classic:latest
+    working_directory: ~/project
     steps:
       - checkout
-      - setup_remote_docker
       - run: ./gradlew runTest
