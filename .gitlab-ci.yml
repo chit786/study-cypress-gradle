@@ -1,16 +1,19 @@
-image: docker:latest
+image: docker
 
 services:
   - docker:dind
 
-variables:
-  DOCKER_DRIVER: overlay
-
 stages:
   - test
+  
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
 
 gradle-build:
-  image: java:8
   stage: test
+  image: frolvlad/alpine-oraclejdk8:latest
   script:
+    - apk add --no-cache py-pip
+    - pip install docker-compose
     - ./gradlew runTest
