@@ -5,6 +5,8 @@ Travis CI : [![Build Status](https://travis-ci.org/chit786/study-cypress-gradle.
 
 Circle CI : [![CircleCI](https://circleci.com/gh/chit786/study-cypress-gradle/tree/master.svg?style=svg)](https://circleci.com/gh/chit786/study-cypress-gradle/tree/master)
 
+Gitlab : [![gitlab](https://img.shields.io/badge/gitlab-passing-brightgreen.svg?link=https://gitlab.com/chit786/study-cypress-gradle/-/jobs/90791559)](https://gitlab.com/chit786/study-cypress-gradle/-/jobs/90791559)
+
 ## Praface : Baseline setup to use docker gradle and cypress together which can be leveraged for continuous integration and testing
 
 ## pre requisites : Git, Docker Client must be installed on your machine
